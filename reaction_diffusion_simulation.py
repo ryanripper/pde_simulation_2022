@@ -1,8 +1,9 @@
+import matplotlib.pyplot as plt
+import streamlit as st
 import numpy as np
 from scipy.sparse import spdiags
-import matplotlib.pyplot as plt
 
-### define functions
+### DEFINE FUNCTIONS
 
 def make_grid(minx, maxx, miny, maxy, dx, dy):
    xg = range(minx, maxx, dx)
@@ -173,7 +174,7 @@ def make_HImat_sparse(nx, ny, a, b, c, d, e):
 
    return HI
    
-### simulation of reaction-diffusion equation
+### SIMULATION OF REACTION-DIFFUSION EQUATION
 
 ny = 20
 nx = 20
@@ -219,8 +220,8 @@ uI[:, 0] = ustrt.flatten()
 
 for t in range(2, T + 1):
    uI[:, t - 1] = np.dot(HI, uI[:, t - 1 - 1]) + np.dot(HB, uB[:, t - 1 - 1])
-   
-### visualize simulation
+
+### VISUALIZE SIMULATION
 
 for j in range(1 - 1, T):
    tmp = uI[:, j]
