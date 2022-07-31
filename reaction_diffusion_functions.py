@@ -2,6 +2,8 @@ import numpy as np
 from scipy.sparse import spdiags
 import matplotlib.pyplot as plt
 
+### define functions
+
 def make_grid(minx, maxx, miny, maxy, dx, dy):
    xg = range(minx, maxx, dx)
    yg = range(maxy, miny, -dy)
@@ -218,13 +220,13 @@ uI[:, 0] = ustrt.flatten()
 for t in range(2, T + 1):
    uI[:, t - 1] = np.dot(HI, uI[:, t - 1 - 1]) + np.dot(HB, uB[:, t - 1 - 1])
    
-###
+### visualize simulation
 
 for j in range(1 - 1, T):
-    tmp = uI[:, j]
-    
-    tmp2 = np.reshape(tmp, (ny, nx))
-    
-    plt.imshow(tmp2)
-    plt.colorbar()
-    plt.show()
+   tmp = uI[:, j]
+
+   tmp2 = np.reshape(tmp, (ny, nx))
+
+   plt.imshow(tmp2)
+   plt.colorbar()
+   plt.show()
