@@ -176,58 +176,75 @@ def make_HImat_sparse(nx, ny, a, b, c, d, e):
    
 ### SIMULATION OF REACTION-DIFFUSION EQUATION
 
-ny = 20
-nx = 20
-T = 30
-dx = 1
-dy = 1
-dt = 1
-alpha = 0
+# ny = 20
+ny = st.sidebar.number_input(label = "ny", value = 20)
 
-dx2 = dx * dx
-dy2 = dy * dy
+# nx = 20
+nx = st.sidebar.number_input(label = "nx", value = 20)
 
-grdxy, xg, yg = make_grid(1, nx + 2, 1, ny + 2, dx, dy)
+# T = 30
+T = st.sidebar.number_input(label = "T", value = 30)
 
-DX = make_Dx_sparse(nx, ny)
+# dx = 1
+dx = st.sidebar.number_input(label = "dx", value = 1)
 
-DY = make_Dy_sparse(nx, ny)
+# dy = 1
+dy = st.sidebar.number_input(label = "dy", value = 1)
 
-MtilI = make_MtilI_sparse(nx, ny)
+# dt = 1
+dt = st.sidebar.number_input(label = "dt", value = 1)
 
-MtilB = make_MtilB_sparse(nx, ny)
+# alpha = 0
+alpha = st.sidebar.number_input(label = "alpha", value = 0)
 
-n = nx * ny
+def reaction_diffusion_simulation():
+   dx2 = dx * dx
+   dy2 = dy * dy
 
-nB, N = MtilB.shape
+   grdxy, xg, yg = make_grid(1, nx + 2, 1, ny + 2, dx, dy)
 
-D = .2 * np.ones((N, 1))
+   DX = make_Dx_sparse(nx, ny)
 
-uI = np.zeros((n, T))
-uB = np.zeros((nB, T))
+   DY = make_Dy_sparse(nx, ny)
 
-a, b, c, d, e = make_abcde(dt, dx, dy, alpha, D, DX, DY, MtilI)
+   MtilI = make_MtilI_sparse(nx, ny)
 
-HB = make_HBmat_sparse(nx, ny, b, c, d, e)
+   MtilB = make_MtilB_sparse(nx, ny)
 
-HI = make_HImat_sparse(nx, ny, a, b, c, d, e)
+   n = nx * ny
 
-ustrt = np.zeros((ny, nx))
+   nB, N = MtilB.shape
 
-ustrt[9, 9] = .5
+   D = .2 * np.ones((N, 1))
 
-uI[:, 0] = ustrt.flatten()
+   uI = np.zeros((n, T))
+   uB = np.zeros((nB, T))
 
-for t in range(2, T + 1):
-   uI[:, t - 1] = np.dot(HI, uI[:, t - 1 - 1]) + np.dot(HB, uB[:, t - 1 - 1])
+   a, b, c, d, e = make_abcde(dt, dx, dy, alpha, D, DX, DY, MtilI)
 
-### VISUALIZE SIMULATION
+   HB = make_HBmat_sparse(nx, ny, b, c, d, e)
 
-for j in range(1 - 1, T):
-   tmp = uI[:, j]
+   HI = make_HImat_sparse(nx, ny, a, b, c, d, e)
 
-   tmp2 = np.reshape(tmp, (ny, nx))
+   ustrt = np.zeros((ny, nx))
 
-   plt.imshow(tmp2)
-   plt.colorbar()
-   plt.show()
+   ustrt[9, 9] = .5
+
+   uI[:, 0] = ustrt.flatten()
+
+   for t in range(2, T + 1):
+      uI[:, t - 1] = np.dot(HI, uI[:, t - 1 - 1]) + np.dot(HB, uB[:, t - 1 - 1])
+
+   ### VISUALIZE SIMULATION
+
+   for j in range(1 - 1, T):
+      tmp = uI[:, j]
+
+      tmp2 = np.reshape(tmp, (ny, nx))
+
+      plt.imshow(tmp2)
+      plt.colorbar()
+      plt.show()
+      
+if st.sidebar.button("RUN REACTION-DIFFUSION SIMULATION"):
+   reaction_diffusion_simulation()
