@@ -1,7 +1,12 @@
 import matplotlib.pyplot as plt
+import plotly.express as px
 import streamlit as st
 import numpy as np
 from scipy.sparse import spdiags
+import cProfile
+import pstats
+import io
+import pandas as pd
 
 ### DEFINE FUNCTIONS
 
@@ -176,6 +181,8 @@ def make_HImat_sparse(nx, ny, a, b, c, d, e):
    
 ### SIMULATION OF REACTION-DIFFUSION EQUATION
 
+plot_spot = st.empty()
+
 # ny = 20
 ny = st.sidebar.number_input(label = "ny", value = 20)
 
@@ -241,10 +248,31 @@ def reaction_diffusion_simulation():
       tmp = uI[:, j]
 
       tmp2 = np.reshape(tmp, (ny, nx))
-
-      plt.imshow(tmp2)
-      plt.colorbar()
-      plt.show()
       
+      fig = px.imshow(tmp2)
+      
+      with plot_spot:
+           st.plotly_chart(fig)
+           
 if st.sidebar.button("RUN REACTION-DIFFUSION SIMULATION"):
+   pr = cProfile.Profile()
+   
+   pr.enable()
+   
    reaction_diffusion_simulation()
+   
+   pr.disable()
+   
+   result = io.StringIO()
+   
+   pstats.Stats(pr, stream = result).print_stats()
+   
+   result = result.getvalue()
+   
+   result = "ncalls" + result.split("ncalls")[-1]
+   
+   result = "\n".join([",".join(line.rstrip().split(None,5)) for line in result.split("\n")])
+   
+   df = pd.read_csv(io.StringIO(result), sep = ",")
+   
+   st.dataframe(df)
