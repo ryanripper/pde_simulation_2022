@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 import numpy as np
 from scipy.sparse import spdiags
 import cProfile
 import pstats
+import math
 import io
 import pandas as pd
 
@@ -181,28 +183,81 @@ def make_HImat_sparse(nx, ny, a, b, c, d, e):
    
 ### SIMULATION OF REACTION-DIFFUSION EQUATION
 
-plot_spot = st.empty()
+st.markdown("## Simulation of Reaction-Diffusion Equation")
+
+st.markdown("We aim to simulate the Reaction-Diffusion Equation as defined below:")
+
+st.latex(r'''
+   \frac{\partial u}{\partial t} = \frac{\partial}{\partial x} \left(\delta (x, y) \frac{\partial u}{\partial x} \right) + \frac{\partial}{\partial y} \left(\delta (x, y) \frac{\partial u}{\partial y} \right) + f(u)
+   ''')
+   
+st.markdown(r'''
+   Where $u_t(x,y)$ is a spatio–temporal process at spatial location $s = (x, y)$ in two-dimensional Euclidean space at time t and $\delta (x, y)$ is a spatially varying diffusion coefficient.
+   ''')
+   
+st.markdown(r'''
+   The “reaction” term $f(u)$ describes the population growth dynamics.
+   ''')
+   
+st.markdown(r'''
+   We can write the matrix form of the solution to the Reaction-Diffusion Equation where $f(u)$ is zero as:
+   ''')
+   
+st.latex(r'''
+   u_t = H(\delta, \Delta_t, \Delta_x)u_{t−1} + H_B(\delta, \Delta_t, \Delta_x)u_B
+   ''')
+   
+st.markdown("Where the term on the left of the RHS represents the interior solution and the term on the right of the RHS represents the boundary solution.")
+
+st.markdown("### Visualizations")
+
+st.markdown("The left-hand side of this module allows the user to alter values that change the dynamics of the matrix form to the solution to the Reaction-Diffusion Equation.")
+
+st.markdown(r'''
+   Once the values have been altered, by pushing the button labeled "RUN REACTION-DIFFUSION EQUATION", the module will numerically solve the Reaction-Diffusion Equation and display both a two- and three-dimensional visualization of the solution over space and time.
+   ''')
+
+st.markdown("#### Two-Dimensional Visualization (Scalar Data)")
+
+plot_spot_2d = st.empty()
+
+with plot_spot_2d:
+   st.markdown(r'''
+      [Please click "RUN REACTION-DIFFUSION SIMULATION" to view.]
+      ''')
+
+st.markdown("#### Three-Dimensional Visualization (Surface Plot)")
+
+plot_spot_3d = st.empty()
+
+with plot_spot_3d:
+   st.markdown(r'''
+      [Please click "RUN REACTION-DIFFUSION SIMULATION" to view.]
+      ''')
+
+# mass = 0.5
+mass = st.sidebar.number_input(label = "Mass of Starting Value", value = 0.50)
 
 # ny = 20
-ny = st.sidebar.number_input(label = "ny", value = 20)
+ny = st.sidebar.number_input(label = "Number of Columns", value = 20)
 
 # nx = 20
-nx = st.sidebar.number_input(label = "nx", value = 20)
+nx = st.sidebar.number_input(label = "Number of Rows", value = 20)
 
 # T = 30
-T = st.sidebar.number_input(label = "T", value = 30)
+T = st.sidebar.number_input(label = "Number of Time Steps", value = 30)
 
 # dx = 1
-dx = st.sidebar.number_input(label = "dx", value = 1)
+dx = st.sidebar.number_input(label = "Horizontal Diffusion Rate", value = 1)
 
 # dy = 1
-dy = st.sidebar.number_input(label = "dy", value = 1)
+dy = st.sidebar.number_input(label = "Vertical Diffusion Rate", value = 1)
 
 # dt = 1
-dt = st.sidebar.number_input(label = "dt", value = 1)
+dt = st.sidebar.number_input(label = "Time Step", value = 1.00)
 
 # alpha = 0
-alpha = st.sidebar.number_input(label = "alpha", value = 0)
+alpha = st.sidebar.number_input(label = "Reaction Rate", value = 0.00)
 
 def reaction_diffusion_simulation():
    dx2 = dx * dx
@@ -233,9 +288,13 @@ def reaction_diffusion_simulation():
 
    HI = make_HImat_sparse(nx, ny, a, b, c, d, e)
 
-   ustrt = np.zeros((ny, nx))
+   ustrt = np.zeros((nx, ny))
+   
+   mid_col = math.ceil(nx / 2) - 1
+   
+   mid_row = math.ceil(ny / 2) - 1
 
-   ustrt[9, 9] = .5
+   ustrt[mid_col, mid_row] = mass
 
    uI[:, 0] = ustrt.flatten()
 
@@ -247,12 +306,24 @@ def reaction_diffusion_simulation():
    for j in range(1 - 1, T):
       tmp = uI[:, j]
 
-      tmp2 = np.reshape(tmp, (ny, nx))
+      tmp2 = np.reshape(tmp, (nx, ny))
       
-      fig = px.imshow(tmp2)
+      #####
       
-      with plot_spot:
-           st.plotly_chart(fig)
+      fig_2d = px.imshow(tmp2, color_continuous_scale = "viridis")
+      
+      #####
+      
+      fig_3d = go.Figure(data = [go.Surface(z = tmp2, colorscale = "viridis")])
+      
+      #####
+      
+      with plot_spot_2d:
+         st.plotly_chart(fig_2d)
+      
+      with plot_spot_3d:
+         # st.pyplot(fig_3d)
+         st.plotly_chart(fig_3d)
            
 if st.sidebar.button("RUN REACTION-DIFFUSION SIMULATION"):
    pr = cProfile.Profile()
@@ -271,7 +342,7 @@ if st.sidebar.button("RUN REACTION-DIFFUSION SIMULATION"):
    
    result = "ncalls" + result.split("ncalls")[-1]
    
-   result = "\n".join([",".join(line.rstrip().split(None,5)) for line in result.split("\n")])
+   result = "\n".join([",".join(line.rstrip().split(None, 5)) for line in result.split("\n")])
    
    df = pd.read_csv(io.StringIO(result), sep = ",")
    
