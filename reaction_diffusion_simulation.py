@@ -235,8 +235,8 @@ with plot_spot_3d:
       [Please click "RUN REACTION-DIFFUSION SIMULATION" to view.]
       ''')
 
-# mass = 0.5
-mass = st.sidebar.number_input(label = "Mass of Starting Value", value = 0.50)
+# mass = 1.00
+mass = st.sidebar.number_input(label = "Mass of Starting Value", value = 1.00)
 
 # ny = 20
 ny = st.sidebar.number_input(label = "Number of Columns", value = 20)
@@ -244,8 +244,8 @@ ny = st.sidebar.number_input(label = "Number of Columns", value = 20)
 # nx = 20
 nx = st.sidebar.number_input(label = "Number of Rows", value = 20)
 
-# T = 30
-T = st.sidebar.number_input(label = "Number of Time Steps", value = 30)
+# T = 60
+T = st.sidebar.number_input(label = "Number of Time Steps", value = 60)
 
 # dx = 1
 dx = st.sidebar.number_input(label = "Horizontal Diffusion Rate", value = 1)
@@ -253,10 +253,10 @@ dx = st.sidebar.number_input(label = "Horizontal Diffusion Rate", value = 1)
 # dy = 1
 dy = st.sidebar.number_input(label = "Vertical Diffusion Rate", value = 1)
 
-# dt = 1
-dt = st.sidebar.number_input(label = "Time Step", value = 1.00)
+# dt = 0.10
+dt = st.sidebar.number_input(label = "Time Step", value = 0.10)
 
-# alpha = 0
+# alpha = 0.00
 alpha = st.sidebar.number_input(label = "Reaction Rate", value = 0.00)
 
 def reaction_diffusion_simulation():
