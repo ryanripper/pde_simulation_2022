@@ -3,7 +3,4 @@ plotly
 streamlit
 numpy
 scipy
-pstats
-math
-io
 pandas
