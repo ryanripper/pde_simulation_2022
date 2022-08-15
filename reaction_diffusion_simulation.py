@@ -300,6 +300,10 @@ def reaction_diffusion_simulation():
 
    for t in range(2, T + 1):
       uI[:, t - 1] = np.dot(HI, uI[:, t - 1 - 1]) + np.dot(HB, uB[:, t - 1 - 1])
+      
+   min_z = np.ndarray.min(uI)
+   
+   max_z = np.ndarray.max(uI)
 
    ### VISUALIZE SIMULATION
 
@@ -315,6 +319,8 @@ def reaction_diffusion_simulation():
       #####
       
       fig_3d = go.Figure(data = [go.Surface(z = tmp2, colorscale = "viridis")])
+      
+      fig_3d.update_layout(scene = dict(zaxis = dict(nticks = 4, range = [min_z, max_z])))
       
       #####
       
