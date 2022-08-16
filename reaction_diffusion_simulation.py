@@ -244,8 +244,8 @@ ny = st.sidebar.number_input(label = "Number of Columns", value = 20)
 # nx = 20
 nx = st.sidebar.number_input(label = "Number of Rows", value = 20)
 
-# T = 60
-T = st.sidebar.number_input(label = "Number of Time Steps", value = 60)
+# T = 100
+T = st.sidebar.number_input(label = "Number of Time Steps", value = 100)
 
 # dx = 1
 dx = st.sidebar.number_input(label = "Horizontal Diffusion Rate", value = 1)
@@ -314,11 +314,11 @@ def reaction_diffusion_simulation():
       
       #####
       
-      fig_2d = px.imshow(tmp2, color_continuous_scale = "viridis")
+      fig_2d = px.imshow(tmp2, color_continuous_scale = "viridis", zmin = min_z, zmax = max_z)
       
       #####
       
-      fig_3d = go.Figure(data = [go.Surface(z = tmp2, colorscale = "viridis")])
+      fig_3d = go.Figure(data = [go.Surface(z = tmp2, colorscale = "viridis", cmin = min_z, cmax = max_z)])
       
       fig_3d.update_layout(scene = dict(zaxis = dict(nticks = 4, range = [min_z, max_z])))
       
