@@ -207,7 +207,23 @@ st.latex(r'''
    u_t = H(\delta, \Delta_t, \Delta_x)u_{t−1} + H_B(\delta, \Delta_t, \Delta_x)u_B
    ''')
    
-st.markdown("Where the term on the left of the RHS represents the interior solution and the term on the right of the RHS represents the boundary solution.")
+st.markdown("Where the term on the left of the RHS represents the interior solution and the term on the right of the RHS represents the boundary solution (specification of model edge effects).")
+
+st.markdown(r'''
+   $H$ represents the propagator (redistribution) matrix that depends upon the diffusion coefficients $\delta$ and the discretization parameters $\Delta_t$, $\Delta_x$, and $\Delta_y$.
+   ''')
+   
+st.markdown(r'''
+   $u_t$ corresponds to an arbitrary vectorization of the gridded $u$-process at time $t$ and $H(\delta, \Delta_t, \Delta_x)$ is a sparse $n × n$ matrix with essentially five nonzero diagonals.
+   ''')
+   
+st.markdown(r'''
+   For a full discussion of the PDE-based dynamics of the Reaction-Diffusion Equation, please read:
+   ''')
+   
+st.markdown(r'''
+   [Wikle, Christopher K., and Mevin B. Hooten. "Hierarchical Bayesian spatio-temporal models for population spread." *Applications of computational statistics in the environmental sciences: hierarchical Bayes and MCMC methods* 145169 (2006).](https://mhooten.github.io/publications/Wikle_Hooten_ACSES_Chap_2006.pdf)
+   ''')
 
 st.markdown("### Visualizations")
 
